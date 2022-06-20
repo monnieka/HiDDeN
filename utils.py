@@ -5,16 +5,21 @@ import csv
 import time
 import pickle
 import logging
+import random
 
 import torch
 from torchvision import datasets, transforms
 import torchvision.utils
 from torch.utils import data
 import torch.nn.functional as F
+import data_loader
+from pycocotools.coco import COCO
 
 from options import HiDDenConfiguration, TrainingOptions
 from model.hidden import Hidden
+import numpy as np
 
+np.random.seed(1)
 
 def image_to_tensor(image):
     """
@@ -134,15 +139,25 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
     }
+    
+    
 
-    train_images = datasets.ImageFolder(train_options.train_folder, data_transforms['train'])
+    ##inserire seed per prendere sempre gli stessi esempi (?) e mask per limitarne il numero a 10000 e 1000
+    train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2017.json', data_transforms['train'])
+    validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2017.json', data_transforms['test'])
+    '''
+    train_images = np.array(train_images)
+    validation_images = np.array(validation_images)'''
+    #train_images = datasets.ImageFolder(train_options.train_folder, data_transforms['train'])
+    #train_idx = np.random.choice(len(train_images),size=10000,replace=False)
     train_loader = torch.utils.data.DataLoader(train_images, batch_size=train_options.batch_size, shuffle=True,
-                                               num_workers=4)
-
-    validation_images = datasets.ImageFolder(train_options.validation_folder, data_transforms['test'])
+                                               num_workers=1)
+    
+    #validation_images = datasets.ImageFolder(train_options.validation_folder, data_transforms['test'])
+    #val_idx = np.random.choice(len(validation_images),size=1000,replace=False)
     validation_loader = torch.utils.data.DataLoader(validation_images, batch_size=train_options.batch_size,
-                                                    shuffle=False, num_workers=4)
-
+                                                    shuffle=False, num_workers=1)
+    
     return train_loader, validation_loader
 
 

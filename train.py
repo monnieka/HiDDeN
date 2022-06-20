@@ -30,6 +30,7 @@ def train(model: Hidden,
     """
 
     train_data, val_data = utils.get_data_loaders(hidden_config, train_options)
+    
     file_count = len(train_data.dataset)
     if file_count % train_options.batch_size == 0:
         steps_in_epoch = file_count // train_options.batch_size
@@ -48,7 +49,7 @@ def train(model: Hidden,
         step = 1
         for image, _ in train_data:
             image = image.to(device)
-            message = torch.Tensor(np.random.choice([0, 1], (image.shape[0], hidden_config.message_length))).to(device)
+            message = torch.FloatTensor(np.random.choice([0, 1], (image.shape[0], hidden_config.message_length))).to(device)
             losses, _ = model.train_on_batch([image, message])
 
             for name, loss in losses.items():
