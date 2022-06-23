@@ -66,8 +66,8 @@ def main():
         checkpoint, loaded_checkpoint_file_name = utils.load_last_checkpoint(os.path.join(this_run_folder, 'checkpoints'))
         train_options.start_epoch = checkpoint['epoch'] + 1
         if args.data_dir is not None:
-            train_options.train_folder = os.path.join(args.data_dir, 'train2017')
-            train_options.validation_folder = os.path.join(args.data_dir, 'val2017')
+            train_options.train_folder = os.path.join(args.data_dir, 'train2014')
+            train_options.validation_folder = os.path.join(args.data_dir, 'val2014')
         if args.epochs is not None:
             if train_options.start_epoch < args.epochs:
                 train_options.number_of_epochs = args.epochs
@@ -82,8 +82,8 @@ def main():
         train_options = TrainingOptions(
             batch_size=args.batch_size,
             number_of_epochs=args.epochs,
-            train_folder=os.path.join(args.data_dir, 'train2017'),
-            validation_folder=os.path.join(args.data_dir, 'val2017'),
+            train_folder=os.path.join(args.data_dir, 'train2014'),
+            validation_folder=os.path.join(args.data_dir, 'val2014'),
             runs_folder=os.path.join('.', 'runs'),
             start_epoch=start_epoch,
             experiment_name=args.name)

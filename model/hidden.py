@@ -1,3 +1,4 @@
+from turtle import backward
 import numpy as np
 import torch
 import torch.nn as nn
@@ -139,9 +140,9 @@ class Hidden:
         self.encoder_decoder.eval()
         self.discriminator.eval()
         with torch.no_grad():
-            d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device)
-            d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device)
-            g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device)
+            d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)
+            d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device, dtype = torch.float64)
+            g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)
 
             d_on_cover = self.discriminator(images)
             d_loss_on_cover = self.bce_with_logits_loss(d_on_cover, d_target_label_cover)

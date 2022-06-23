@@ -30,7 +30,7 @@
 *.exe
 *.out
 *.app
-
+*.sh
 
 # Folders
 __pycache__/
