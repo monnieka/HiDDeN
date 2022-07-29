@@ -30,10 +30,13 @@ class CocoDataset(data.Dataset):
         target = coco.anns[ann_id]['category_id']
         img_id = coco.anns[ann_id]['image_id']
         path = coco.loadImgs(img_id)[0]['file_name']
-
+        
         image = Image.open(os.path.join(self.img_dir, path)).convert('RGB')
+        
         if self.transform is not None:
             image = self.transform(image)
+        
+        
         #target = float(target)
 
         return image, target

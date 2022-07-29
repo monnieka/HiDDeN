@@ -7,6 +7,8 @@ from model.discriminator import Discriminator
 from model.encoder_decoder import EncoderDecoder
 from vgg_loss import VGGLoss
 from noise_layers.noiser import Noiser
+from attacker import Net
+from model.AT_GAN import EncoderGANDecoder
 
 
 class Hidden:
@@ -20,6 +22,8 @@ class Hidden:
         super(Hidden, self).__init__()
 
         self.encoder_decoder = EncoderDecoder(configuration, noiser).to(device)
+        self.egd = EncoderGANDecoder(configuration).to(device)
+
         self.discriminator = Discriminator(configuration).to(device)
         self.optimizer_enc_dec = torch.optim.Adam(self.encoder_decoder.parameters())
         self.optimizer_discrim = torch.optim.Adam(self.discriminator.parameters())
@@ -62,6 +66,8 @@ class Hidden:
         batch_size = images.shape[0]
         self.encoder_decoder.train()
         self.discriminator.train()
+        self.egd.train()
+        
         with torch.enable_grad():
             # ---------------- Train the discriminator -----------------------------
             self.optimizer_discrim.zero_grad()
@@ -82,12 +88,21 @@ class Hidden:
             d_loss_on_encoded.backward()
             self.optimizer_discrim.step()
 
+            encoded_img, noised_img, decoded_msg = self.egd(images, messages)
+            d_on_noised = self.discriminator(encoded_images.detach())
+            d_loss_on_noised = self.bce_with_logits_loss(d_on_noised, d_target_label_encoded)
+
             # --------------Train the generator (encoder-decoder) ---------------------
             self.optimizer_enc_dec.zero_grad()
             # target label for encoded images should be 'cover', because we want to fool the discriminator
             d_on_encoded_for_enc = self.discriminator(encoded_images)
             g_loss_adv = self.bce_with_logits_loss(d_on_encoded_for_enc, g_target_label_encoded)
-
+            
+            '''
+            # --------------Train the additional GAN (noiser) -----------------------
+            noise_on_encoded = self.noise_gan(encoded_images.detach()) #detach or not?
+            noise_gan_loss = self.mse_loss(noise_on_encoded, encoded_images)
+            '''
             if self.vgg_loss == None:
                 g_loss_enc = self.mse_loss(encoded_images, images)
             else:
@@ -113,7 +128,8 @@ class Hidden:
             'bitwise-error  ': bitwise_avg_err,
             'adversarial_bce': g_loss_adv.item(),
             'discr_cover_bce': d_loss_on_cover.item(),
-            'discr_encod_bce': d_loss_on_encoded.item()
+            'discr_encod_bce': d_loss_on_encoded.item(),
+            'noise_gan'      : noise_gan_loss.item()
         }
         return losses, (encoded_images, noised_images, decoded_messages)
 
@@ -139,9 +155,9 @@ class Hidden:
         self.encoder_decoder.eval()
         self.discriminator.eval()
         with torch.no_grad():
-            d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device)
-            d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device)
-            g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device)
+            d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64 )
+            d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device, dtype = torch.float64)
+            g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)
 
             d_on_cover = self.discriminator(images)
             d_loss_on_cover = self.bce_with_logits_loss(d_on_cover, d_target_label_cover)
