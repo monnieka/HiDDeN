@@ -50,10 +50,7 @@ def train(model: Hidden,
         for image, _ in train_data:
             image = image.to(device)
             message = torch.FloatTensor(np.random.choice([0, 1], (image.shape[0], hidden_config.message_length))).to(device)
-            
             losses, _ = model.train_on_batch([image, message])
-            #losses, _ = model.train_on_batch([image.clone(), message.clone()])
-
 
             for name, loss in losses.items():
                 training_losses[name].update(loss)
