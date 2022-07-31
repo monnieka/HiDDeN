@@ -1,3 +1,4 @@
+from turtle import backward
 import numpy as np
 import torch
 import torch.nn as nn
@@ -165,7 +166,11 @@ class Hidden:
         self.encoder_decoder.eval()
         self.discriminator.eval()
         with torch.no_grad():
+<<<<<<< HEAD
             d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64 )
+=======
+            d_target_label_cover = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
             d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device, dtype = torch.float64)
             g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)
 

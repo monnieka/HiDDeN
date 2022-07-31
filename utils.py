@@ -6,6 +6,7 @@ import time
 import pickle
 import logging
 import random
+import json
 
 import torch
 from torchvision import datasets, transforms
@@ -19,7 +20,10 @@ from options import HiDDenConfiguration, TrainingOptions
 from model.hidden import Hidden
 import numpy as np
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
 
 def image_to_tensor(image):
     """
@@ -59,7 +63,11 @@ def save_images(original_images, watermarked_images, epoch, folder, resize_to=No
 
     stacked_images = torch.cat([images, watermarked_images], dim=0)
     filename = os.path.join(folder, 'epoch-{}.png'.format(epoch))
+<<<<<<< HEAD
     torchvision.utils.save_image(stacked_images, filename)#, original_images.shape[0], normalize=False)
+=======
+    torchvision.utils.save_image(stacked_images, filename) #, original_images.shape[0], normalize=False)
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
 
 
 def sorted_nicely(l):
@@ -140,6 +148,7 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
         ])
     }
     
+<<<<<<< HEAD
     ##inserire seed per prendere sempre gli stessi esempi e mask per limitarne il numero a 10000 e 1000
     train_images  = data_loader.CocoDataset(train_options.train_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_train2014.json', data_transforms['train'])
     validation_images = data_loader.CocoDataset(train_options.validation_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_val2014.json', data_transforms['test'])
@@ -154,14 +163,27 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
     validation_images = torch.utils.data.Subset(validation_images, [random.randint(0,len(validation_images)) for _ in range(1000)])
     
 
+=======
+    train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
+    validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
+   
+    f = open('data_indexes','r')
+    idx = json.load(f)
+    train_images = torch.utils.data.Subset(train_images, idx['train'])# [random.randint(0,len(train_images)) for _ in range(10000)])
+    validation_images = torch.utils.data.Subset(validation_images, idx['val'])#[random.randint(0,len(validation_images)) for _ in range(1000)])
+
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
     train_loader = torch.utils.data.DataLoader(train_images, batch_size=train_options.batch_size, shuffle=True,
-                                               num_workers=1)
+                                               num_workers=4)
     
+<<<<<<< HEAD
     validation_images = torch.utils.data.Subset(validation_images, np.arange(100))
 
     
+=======
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
     validation_loader = torch.utils.data.DataLoader(validation_images, batch_size=train_options.batch_size,
-                                                    shuffle=False, num_workers=1)
+                                                    shuffle=False, num_workers=4)
     
     return train_loader, validation_loader
 

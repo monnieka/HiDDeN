@@ -30,7 +30,7 @@
 *.exe
 *.out
 *.app
-
+*.sh
 
 # Folders
 __pycache__/
@@ -41,5 +41,10 @@ data/
 runs/
 saved-runs/
 
+<<<<<<< HEAD
 main.py
 *.txt
+=======
+error.txt
+output.txt
+>>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
