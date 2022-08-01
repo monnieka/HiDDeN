@@ -4,24 +4,6 @@ import torch
 from noise_layers.identity import Identity
 from noise_layers.jpeg_compression import JpegCompression
 from noise_layers.quantization import Quantization
-
-
-# Spatial size of training images. 
-image_size = 128
-
-# Number of channels in the training images. For color images this is 3
-nc = 3
-
-# Size of z latent vector (i.e. size of generator input)
-nz = 100
-
-# Alpha hyperparams for loss
-alpha1 = 15.0
-alpha2 = 1.0
-alpha_w = 0.2
-num_iter = 5
-
-
 class Net(nn.Module):
 
     def __init__(self):
