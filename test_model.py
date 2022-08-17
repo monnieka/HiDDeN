@@ -62,7 +62,7 @@ def main():
     print('original: {}'.format(message_detached))
     print('decoded : {}'.format(decoded_rounded))
     print('error : {:.3f}'.format(np.mean(np.abs(decoded_rounded - message_detached))))
-    utils.save_images(image_tensor.cpu(), encoded_images.cpu(), 'test', '.', resize_to=(256, 256))
+    utils.save_images(image_tensor.cpu(), encoded_images.cpu(), noised_images.cpu(), 'test', '.', resize_to=(256, 256)) #da cambiare 0
 
     # bitwise_avg_err = np.sum(np.abs(decoded_rounded - message.detach().cpu().numpy()))/(image_tensor.shape[0] * messages.shape[1])
 

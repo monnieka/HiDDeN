@@ -45,19 +45,28 @@ def tensor_to_image(tensor):
     return np.clip(image, 0, 255).astype(np.uint8)
 
 
-def save_images(original_images, watermarked_images, epoch, folder, resize_to=None):
+def save_images(original_images, watermarked_images,noised_images, noised_img, epoch, folder, resize_to=None):
     images = original_images[:original_images.shape[0], :, :, :].cpu()
     watermarked_images = watermarked_images[:watermarked_images.shape[0], :, :, :].cpu()
+    noised_images =  noised_images[:noised_images.shape[0], :, :, :].cpu()
+    noised_img =  noised_img[:noised_img.shape[0], :, :, :].cpu()
 
     # scale values to range [0, 1] from original range of [-1, 1]
     images = (images + 1) / 2
     watermarked_images = (watermarked_images + 1) / 2
+    
+    noised_images = (noised_images + 1) / 2
+    noised_img = (noised_img + 1) / 2
+
 
     if resize_to is not None:
         images = F.interpolate(images, size=resize_to)
         watermarked_images = F.interpolate(watermarked_images, size=resize_to)
+        noised_images = F.interpolate(noised_images, size=resize_to)
+        noised_img = F.interpolate(noised_img, size=resize_to)
 
-    stacked_images = torch.cat([images, watermarked_images], dim=0)
+    stacked_images = torch.cat([images, watermarked_images,noised_images,noised_img], dim=0)
+           
     filename = os.path.join(folder, 'epoch-{}.png'.format(epoch))
     torchvision.utils.save_image(stacked_images, filename)#, original_images.shape[0], normalize=False)
 
