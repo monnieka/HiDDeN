@@ -44,7 +44,8 @@ saved-runs/
 <<<<<<< HEAD
 main.py
 *.txt
-=======
 error.txt
 output.txt
->>>>>>> 2975716b1e718b2e750df698e6a07180fd12637f
+
+train/
+train2014
