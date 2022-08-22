@@ -11,9 +11,6 @@ from noise_layers.noiser import Noiser
 from attacker import Net
 from model.AT_GAN import EncoderGANDecoder
 
-from sklearn.model_selection import GridSearchCV
-
-
 class Hidden:
     def __init__(self, configuration: HiDDenConfiguration, device: torch.device, noiser: Noiser, tb_logger):
         """
@@ -73,8 +70,8 @@ class Hidden:
         self.encoder_decoder.train()
         self.discriminator.train()
         self.egd.train()
-        params = {'new_encoder_loss':[1,1.5,0.5], 'new_decoder_loss':[1,1.5,0.5]}
-        clf = GridSearchCV(self.discriminator, params) #a lui o ad egd???
+        #params = {'new_encoder_loss':[1,1.5,0.5], 'new_decoder_loss':[1,1.5,0.5]}
+        #clf = GridSearchCV(self.discriminator, params) #a lui o ad egd???
         # clf.fit(...da capire)
 
 
@@ -239,7 +236,8 @@ class Hidden:
             'bitwise-error  ': bitwise_avg_err,
             'adversarial_bce': g_loss_adv.item(),
             'discr_cover_bce': d_loss_on_cover.item(),
-            'discr_encod_bce': d_loss_on_encoded.item()          
+            'discr_encod_bce': d_loss_on_encoded.item(),
+            'discr_gan_bce'  : d_loss_on_noised.item()          
         }
         return losses, (encoded_images, noised_images, noised_img, decoded_messages)
 
