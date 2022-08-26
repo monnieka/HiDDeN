@@ -152,25 +152,19 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
     ##inserire seed per prendere sempre gli stessi esempi e mask per limitarne il numero a 10000 e 1000
     train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
     validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
+                                                      
+    f = open('data_indexes','r')
+    idx = json.load(f)
 
-    
-    #train_images = datasets.ImageFolder(train_options.train_folder, data_transforms['train'])
-    #validation_images = datasets.ImageFolder(train_options.validation_folder, data_transforms['test'])
-    
-    random.seed(1)
-    train_images = torch.utils.data.Subset(train_images, [random.randint(0,len(train_images)) for _ in range(10000)])
-    random.seed(1)
-    validation_images = torch.utils.data.Subset(validation_images, [random.randint(0,len(validation_images)) for _ in range(1000)])
-    
+    train_images = torch.utils.data.Subset(train_images, idx['train'])
+    validation_images = torch.utils.data.Subset(validation_images, idx['val'])
 
     train_loader = torch.utils.data.DataLoader(train_images, batch_size=train_options.batch_size, shuffle=True,
-                                               num_workers=1)
-    
-    validation_images = torch.utils.data.Subset(validation_images, np.arange(100))
-
+                                               num_workers=4)
     
     validation_loader = torch.utils.data.DataLoader(validation_images, batch_size=train_options.batch_size,
-                                                    shuffle=False, num_workers=1)
+                                                    shuffle=False, num_workers=4)
+    
     
     return train_loader, validation_loader
 
