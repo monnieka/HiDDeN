@@ -30,3 +30,4 @@ class Noiser(nn.Module):
         random_noise_layer = np.random.choice(self.noise_layers, 1)[0]
         return random_noise_layer(encoded_and_cover)
 
+

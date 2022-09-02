@@ -96,21 +96,13 @@ class Hidden:
             d_loss_on_encoded.backward()
             #self.optimizer_discrim.step() #adam optimizer- spostato alla riga 110
 
-            #train on noised
-            # --------------Train the additional GAN (noiser) -----------------------
-            encoded_img, noised_img, decoded_msg = self.egd(encoded_images, messages)
-            
-            d_on_noised = self.discriminator(encoded_img.detach())
-            d_loss_on_noised = self.bce_with_logits_loss(d_on_noised, d_target_label_encoded) #encoded label
-            d_loss_on_noised.backward()
-
             self.optimizer_discrim.step()   
-
+            '''
             image_loss = self.mse_loss(encoded_img, images)
             message_loss = self.mse_loss(decoded_msg, messages)
             attacker_loss = self.alpha1 * image_loss - self.alpha2 * message_loss
-            ''' come encoder e decoder loss'''
-
+            come encoder e decoder loss
+            '''
 
             # --------------Train the generator (encoder-decoder) ---------------------
             self.optimizer_enc_dec.zero_grad()
@@ -118,27 +110,17 @@ class Hidden:
             d_on_encoded_for_enc = self.discriminator(encoded_images)
             g_loss_adv = self.bce_with_logits_loss(d_on_encoded_for_enc, g_target_label_encoded)
 
-            
-            d_on_noised_for_enc = self.discriminator(encoded_img)
-            g_loss_on_noised = self.bce_with_logits_loss(d_on_noised_for_enc, g_target_label_encoded) #=cover_label ==1 come se fosse l'immagine originale
-            # questo deve dare contributo alla adversarial?
-
             if self.vgg_loss == None:
                 g_loss_enc = self.mse_loss(encoded_images, images) 
             else:
                 vgg_on_cov = self.vgg_loss(images)
                 vgg_on_enc = self.vgg_loss(encoded_images)
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
-            #g_loss_enc_noised?
-
 
             g_loss_dec = self.mse_loss(decoded_messages, messages)
-            #g_loss_dec_noised =-... ??
-
-            '''ma se li aggiungessi non sarebbero esattamente i termini di attacker loss ?'''
 
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                     + self.config.decoder_loss * g_loss_dec +  self.config.attacker_loss * attacker_loss 
+                     + self.config.decoder_loss * g_loss_dec
                      
             g_loss.backward()
             self.optimizer_enc_dec.step()
@@ -149,17 +131,14 @@ class Hidden:
 
         losses = {
             'loss           ': g_loss.item(),
-            'attacker_loss'  : attacker_loss.item(), #giusto per vederla, porta la loss a 1 e qualcosa
             'encoder_mse    ': g_loss_enc.item(),
             'dec_mse        ': g_loss_dec.item(),
             'bitwise-error  ': bitwise_avg_err,
             'adversarial_bce': g_loss_adv.item(),
-            'discr_cover_bce': d_loss_on_cover.item(),
-            'discr_encod_bce': d_loss_on_encoded.item(),
-            'discr_gan_bce'  : d_loss_on_noised.item() #perchè così bassa ? 
+            'discr_cover_bce': d_loss_on_cover.item()
         }
 
-        return losses, (encoded_images, noised_images, noised_img, decoded_messages)
+        return losses, (encoded_images, noised_images, decoded_messages)
 
     def validate_on_batch(self, batch: list):
         """
@@ -198,16 +177,11 @@ class Hidden:
             d_on_encoded_for_enc = self.discriminator(encoded_images)
             g_loss_adv = self.bce_with_logits_loss(d_on_encoded_for_enc, g_target_label_encoded)
 
-
-            encoded_img, noised_img, decoded_msg = self.egd(images, messages)
-           
-            d_on_noised = self.discriminator(encoded_img.detach())
-            d_loss_on_noised = self.bce_with_logits_loss(d_on_noised, d_target_label_encoded) #encoded label
-
+            '''
             image_loss = self.mse_loss(encoded_img, images)
             message_loss = self.mse_loss(decoded_msg, messages)
             attacker_loss = self.alpha1*image_loss - self.alpha2*message_loss
-
+            '''
 
             if self.vgg_loss is None:
                 g_loss_enc = self.mse_loss(encoded_images, images)
@@ -218,7 +192,7 @@ class Hidden:
 
             g_loss_dec = self.mse_loss(decoded_messages, messages)
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                     + self.config.decoder_loss * g_loss_dec +  self.config.attacker_loss * attacker_loss
+                     - self.config.decoder_loss * g_loss_dec
 
         decoded_rounded = decoded_messages.detach().cpu().numpy().round().clip(0, 1)
         bitwise_avg_err = np.sum(np.abs(decoded_rounded - messages.detach().cpu().numpy())) / (
@@ -226,16 +200,14 @@ class Hidden:
 
         losses = {
             'loss           ': g_loss.item(),
-            'attacker_loss'  : attacker_loss.item(),
             'encoder_mse    ': g_loss_enc.item(),
             'dec_mse        ': g_loss_dec.item(),
             'bitwise-error  ': bitwise_avg_err,
             'adversarial_bce': g_loss_adv.item(),
             'discr_cover_bce': d_loss_on_cover.item(),
-            'discr_encod_bce': d_loss_on_encoded.item(),
-            'discr_gan_bce'  : d_loss_on_noised.item()          
+            'discr_encod_bce': d_loss_on_encoded.item()
         }
-        return losses, (encoded_images, noised_images, noised_img, decoded_messages)
+        return losses, (encoded_images, noised_images, decoded_messages)
 
     def to_stirng(self):
         return '{}\n{}'.format(str(self.encoder_decoder), str(self.discriminator))

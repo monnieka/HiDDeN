@@ -18,13 +18,13 @@ class EncoderDecoder(nn.Module):
 
         super(EncoderDecoder, self).__init__()
         self.encoder = Encoder(config)
-        self.noiser = noiser
-
+        self.noiser = Net()
         self.decoder = Decoder(config)
 
     def forward(self, image, message):
+        
         encoded_image = self.encoder(image, message)
-        noised_and_cover = self.noiser([encoded_image, image])
-        noised_image = noised_and_cover[0]
-        decoded_message = self.decoder(noised_image)
-        return encoded_image, noised_image, decoded_message
+        noised_and_cover = self.noiser(encoded_image)
+        decoded_message = self.decoder(noised_and_cover)
+        return encoded_image, noised_and_cover, decoded_message
+
