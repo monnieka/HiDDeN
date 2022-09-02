@@ -7,7 +7,7 @@ from noise_layers.dropout import Dropout
 from noise_layers.resize import Resize
 from noise_layers.quantization import Quantization
 from noise_layers.jpeg_compression import JpegCompression
-
+from noise_layers.learnable import GAN
 
 def parse_pair(match_groups):
     heights = match_groups[0].split(',')
