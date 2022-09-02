@@ -147,10 +147,10 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
     }
     
     ##inserire seed per prendere sempre gli stessi esempi e mask per limitarne il numero a 10000 e 1000
-    #train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
-    #validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
-    train_images  = data_loader.CocoDataset(train_options.train_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_train2014.json', data_transforms['train'])
-    validation_images = data_loader.CocoDataset(train_options.validation_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_val2014.json', data_transforms['test'])
+    train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
+    validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
+    #train_images  = data_loader.CocoDataset(train_options.train_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_train2014.json', data_transforms['train'])
+    #validation_images = data_loader.CocoDataset(train_options.validation_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_val2014.json', data_transforms['test'])
                                                       
     f = open('data_indexes','r')
     idx = json.load(f)

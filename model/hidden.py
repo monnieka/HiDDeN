@@ -111,7 +111,6 @@ class Hidden:
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
 
             g_loss_dec = self.mse_loss(decoded_messages, messages)
-            print(f'FLAG: ', {flag})
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
                      + flag * self.config.decoder_loss * g_loss_dec     
             g_loss.backward()
