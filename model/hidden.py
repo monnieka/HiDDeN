@@ -120,7 +120,7 @@ class Hidden:
             g_loss_dec = self.mse_loss(decoded_messages, messages)
 
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                     + self.config.decoder_loss * g_loss_dec
+                     - self.config.decoder_loss * g_loss_dec
                      
             g_loss.backward()
             self.optimizer_enc_dec.step()
