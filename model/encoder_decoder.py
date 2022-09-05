@@ -20,11 +20,12 @@ class EncoderDecoder(nn.Module):
         self.encoder = Encoder(config)
         self.noiser = noiser
         self.decoder = Decoder(config)
+        self.flag = self.noiser.flag
 
     def forward(self, image, message):
         encoded_image = self.encoder(image, message)
-        noised_and_cover, flag = self.noiser([encoded_image, image])
+        noised_and_cover = self.noiser([encoded_image, image])
         noised_image = noised_and_cover[0]
         decoded_message = self.decoder(noised_image)
-        return encoded_image, noised_image, decoded_message, flag
+        return encoded_image, noised_image, decoded_message
         

@@ -16,6 +16,7 @@ class Noiser(nn.Module):
         super(Noiser, self).__init__()
         self.device = device
         self.noise_layers = [Identity(), GAN(device=device)]
+        self.flag = 1.0
         for layer in noise_layers:
             if type(layer) is str:
                 if layer == 'JpegPlaceholder':
@@ -30,12 +31,11 @@ class Noiser(nn.Module):
         # self.noise_layers = nn.Sequential(*noise_layers)
 
     def forward(self, encoded_and_cover):
-        flag = 1.0
 
         random_noise_layer = np.random.choice(self.noise_layers, 1)[0]
         if type(random_noise_layer) == GAN :
-            flag = -1.0
+            self.flag = -1.0
         
-        return random_noise_layer(encoded_and_cover), flag
+        return random_noise_layer(encoded_and_cover)
 
 
