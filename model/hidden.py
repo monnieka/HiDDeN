@@ -110,6 +110,8 @@ class Hidden:
                 vgg_on_enc = self.vgg_loss(encoded_images)
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
 
+            #flag_tensor = torch.tensor(flag, device=self.device, dtype=torch.float64)
+
             g_loss_dec = self.mse_loss(decoded_messages, messages)
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
                      + flag * self.config.decoder_loss * g_loss_dec     
@@ -181,6 +183,9 @@ class Hidden:
                 vgg_on_enc = self.vgg_loss(encoded_images)
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
             
+
+            #flag_tensor = torch.tensor(flag, device=self.device, dtype=torch.float64)
+
             g_loss_dec = self.mse_loss(decoded_messages, messages)
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
                      + flag * self.config.decoder_loss * g_loss_dec
