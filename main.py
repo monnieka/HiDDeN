@@ -96,8 +96,8 @@ def main():
                                             use_discriminator=True,
                                             use_vgg=False,
                                             discriminator_blocks=3, discriminator_channels=64,
-                                            decoder_loss=0.5,
-                                            encoder_loss=1,
+                                            decoder_loss=1e-3,
+                                            encoder_loss=0.7,
                                             adversarial_loss=1e-3,
                                             enable_fp16=args.enable_fp16
                                             )
