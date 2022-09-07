@@ -91,7 +91,7 @@ class Hidden:
 
             self.optimizer_discrim.step()   
             
-            image_loss = self.mse_loss(noised_images, encoded_images)
+            #image_loss = self.mse_loss(noised_images, encoded_images)
             '''
             message_loss = self.mse_loss(decoded_msg, messages)
             attacker_loss = self.alpha1 * image_loss - self.alpha2 * message_loss
@@ -112,7 +112,7 @@ class Hidden:
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
 
             g_loss_dec = self.mse_loss(decoded_messages, messages)
-            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc - self.config.decoder_loss * g_loss_dec + self.config.image_loss *image_loss
+            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc - self.config.decoder_loss * g_loss_dec
             g_loss.backward()
             self.optimizer_enc_dec.step()
 

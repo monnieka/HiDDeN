@@ -29,7 +29,7 @@ class Noiser(nn.Module):
         # self.noise_layers = nn.Sequential(*noise_layers)
 
     def forward(self, encoded_and_cover):
-        random_noise_layer = self.noise_layers[0]
-        return random_noise_layer(encoded_and_cover)
+        noise_layer = self.noise_layers[0]
+        return noise_layer(encoded_and_cover)
 
 

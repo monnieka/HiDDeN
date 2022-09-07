@@ -146,16 +146,16 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
         ])
     }
     
-    train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
-    validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
-    #train_images  = data_loader.CocoDataset(train_options.train_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_train2014.json', data_transforms['train'])
-    #validation_images = data_loader.CocoDataset(train_options.validation_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_val2014.json', data_transforms['test'])
+    #train_images  = data_loader.CocoDataset(train_options.train_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_train2014.json', data_transforms['train'])
+    #validation_images = data_loader.CocoDataset(train_options.validation_folder,'/nas/softechict-nas-2/datasets/coco/annotations/instances_val2014.json', data_transforms['test'])
+    train_images  = data_loader.CocoDataset(train_options.train_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_train2014.json', data_transforms['train'])
+    validation_images = data_loader.CocoDataset(train_options.validation_folder,'C:/Users/monic/Documents/Appunti/AI4Automotive/annotations/instances_val2014.json', data_transforms['test'])
                                                       
     f = open('data_indexes','r')
     idx = json.load(f)
 
-    train_images = torch.utils.data.Subset(train_images, idx['train'])
-    validation_images = torch.utils.data.Subset(validation_images, idx['val'])
+    train_images = torch.utils.data.Subset(train_images, idx['train'][:20])
+    validation_images = torch.utils.data.Subset(validation_images, idx['val'][:10])
 
     train_loader = torch.utils.data.DataLoader(train_images, batch_size=train_options.batch_size, shuffle=True,
                                                num_workers=4)
