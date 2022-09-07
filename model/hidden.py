@@ -63,10 +63,6 @@ class Hidden:
         batch_size = images.shape[0]
         self.encoder_decoder.train()
         self.discriminator.train()
-        #params = {'new_encoder_loss':[1,1.5,0.5], 'new_decoder_loss':[1,1.5,0.5]}
-        #clf = GridSearchCV(self.discriminator, params) #a lui o ad egd???
-        # clf.fit(...da capire)
-
 
         with torch.enable_grad():
             # ---------------- Train the discriminator -----------------------------
