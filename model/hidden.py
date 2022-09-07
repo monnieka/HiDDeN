@@ -76,12 +76,10 @@ class Hidden:
             d_target_label_encoded = torch.full((batch_size, 1), self.encoded_label, device=self.device, dtype = torch.float64) #0
             g_target_label_encoded = torch.full((batch_size, 1), self.cover_label, device=self.device, dtype = torch.float64)#1
 
-            ''' questo non lo ripeto ma magari lo faccio pesare un po' di più ? '''
             d_on_cover = self.discriminator(images)
             d_loss_on_cover = self.bce_with_logits_loss(d_on_cover, d_target_label_cover)
             d_loss_on_cover.backward()
 
-            '''questo dovrei trainare anche sul fake ovvero encoded _img '''
             # train on fake
             encoded_images, noised_images, decoded_messages = self.encoder_decoder(images, messages)
 
@@ -97,7 +95,6 @@ class Hidden:
             attacker_loss = self.alpha1 * image_loss - self.alpha2 * message_loss
             come encoder e decoder loss
             '''
-
             # --------------Train the generator (encoder-decoder) ---------------------
             self.optimizer_enc_dec.zero_grad()
             # target label for encoded images should be 'cover', because we want to fool the discriminator
@@ -111,16 +108,9 @@ class Hidden:
                 vgg_on_enc = self.vgg_loss(encoded_images)
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
 
-            #flag_tensor = torch.tensor(flag, device=self.device, dtype=torch.float64,requires_grad=False)
-
             g_loss_dec = self.mse_loss(decoded_messages, messages)
-            #if flag == 1.0:
-            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                    + self.encoder_decoder.noiser.flag *self.config.decoder_loss * g_loss_dec
-            #if flag == -1.0:
-            #    g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-            #        - self.config.decoder_loss * g_loss_dec
-            # due casi, più o meno in base al rumore 
+            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc + self.encoder_decoder.noiser.flag *self.config.decoder_loss * g_loss_dec
+
             g_loss.backward()
             self.optimizer_enc_dec.step()
 
@@ -190,15 +180,10 @@ class Hidden:
                 g_loss_enc = self.mse_loss(vgg_on_cov, vgg_on_enc)
             
 
-            #flag_tensor = torch.tensor(flag, device=self.device, dtype=torch.float64,requires_grad=False)
-
             g_loss_dec = self.mse_loss(decoded_messages, messages)
-            #if flag == 1.0:
+
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc + self.encoder_decoder.noiser.flag * self.config.decoder_loss * g_loss_dec
-            #if flag == -1.0:
-            #    g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-            #        - self.config.decoder_loss * g_loss_dec
-            # due casi, più o meno in base al rumore
+
 
         decoded_rounded = decoded_messages.detach().cpu().numpy().round().clip(0, 1)
         bitwise_avg_err = np.sum(np.abs(decoded_rounded - messages.detach().cpu().numpy())) / (
