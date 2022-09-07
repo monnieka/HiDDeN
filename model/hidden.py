@@ -116,7 +116,7 @@ class Hidden:
             g_loss_dec = self.mse_loss(decoded_messages, messages)
             #if flag == 1.0:
             g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                    + self.flag *self.config.decoder_loss * g_loss_dec
+                    + self.encoder_decoder.noiser.flag *self.config.decoder_loss * g_loss_dec
             #if flag == -1.0:
             #    g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
             #        - self.config.decoder_loss * g_loss_dec
@@ -194,8 +194,7 @@ class Hidden:
 
             g_loss_dec = self.mse_loss(decoded_messages, messages)
             #if flag == 1.0:
-            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
-                    + self.flag* self.config.decoder_loss * g_loss_dec
+            g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc + self.encoder_decoder.noiser.flag * self.config.decoder_loss * g_loss_dec
             #if flag == -1.0:
             #    g_loss = self.config.adversarial_loss * g_loss_adv + self.config.encoder_loss * g_loss_enc \
             #        - self.config.decoder_loss * g_loss_dec

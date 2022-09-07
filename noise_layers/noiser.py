@@ -35,7 +35,8 @@ class Noiser(nn.Module):
         random_noise_layer = np.random.choice(self.noise_layers, 1)[0]
         if type(random_noise_layer) == GAN :
             self.flag = -1.0
-        
+        else:
+            self.flag=1.0
         return random_noise_layer(encoded_and_cover)
 
 
