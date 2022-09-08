@@ -49,3 +49,11 @@ output.txt
 
 train/
 train2014
+
+checkpoints/
+
+*.log
+*.pickle
+*.csv
+*.png
+LOGS/
