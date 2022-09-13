@@ -1,10 +1,8 @@
 import numpy as np
-import torch
 import torch.nn as nn
 from noise_layers.identity import Identity
 from noise_layers.jpeg_compression import JpegCompression
 from noise_layers.quantization import Quantization
-from noise_layers.learnable import GAN
 
 
 class Noiser(nn.Module):
@@ -14,9 +12,7 @@ class Noiser(nn.Module):
     """
     def __init__(self, noise_layers: list, device):
         super(Noiser, self).__init__()
-        self.device = device
-        self.noise_layers = [Identity(), GAN(device=device)]
-        self.flag = 1.0
+        self.noise_layers = [Identity()]
         for layer in noise_layers:
             if type(layer) is str:
                 if layer == 'JpegPlaceholder':
@@ -31,14 +27,5 @@ class Noiser(nn.Module):
         # self.noise_layers = nn.Sequential(*noise_layers)
 
     def forward(self, encoded_and_cover):
-
         random_noise_layer = np.random.choice(self.noise_layers, 1)[0]
-        """
-        if type(random_noise_layer) == GAN :
-            self.flag = -1.0
-        else:
-            self.flag=1.0
-        """
         return random_noise_layer(encoded_and_cover)
-
-

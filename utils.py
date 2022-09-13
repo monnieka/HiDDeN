@@ -155,8 +155,8 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
     f = open('data_indexes','r')
     idx = json.load(f)
 
-    train_images = torch.utils.data.Subset(train_images, idx['train'])
-    validation_images = torch.utils.data.Subset(validation_images, idx['val'])
+    train_images = torch.utils.data.Subset(train_images, idx['train'][:3000])
+    validation_images = torch.utils.data.Subset(validation_images, idx['val'][:300])
 
     train_loader = torch.utils.data.DataLoader(train_images, batch_size=train_options.batch_size, shuffle=True,
                                                num_workers=4)

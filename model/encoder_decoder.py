@@ -3,7 +3,6 @@ from model.encoder import Encoder
 from model.decoder import Decoder
 from options import HiDDenConfiguration
 from noise_layers.noiser import Noiser
-from attacker import Net
 
 
 class EncoderDecoder(nn.Module):
@@ -19,8 +18,8 @@ class EncoderDecoder(nn.Module):
         super(EncoderDecoder, self).__init__()
         self.encoder = Encoder(config)
         self.noiser = noiser
+
         self.decoder = Decoder(config)
-        self.flag = self.noiser.flag
 
     def forward(self, image, message):
         encoded_image = self.encoder(image, message)
@@ -28,4 +27,3 @@ class EncoderDecoder(nn.Module):
         noised_image = noised_and_cover[0]
         decoded_message = self.decoder(noised_image)
         return encoded_image, noised_image, decoded_message
-        
